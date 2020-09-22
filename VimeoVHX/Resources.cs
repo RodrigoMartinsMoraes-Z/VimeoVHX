@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 
 namespace VimeoVHX
@@ -29,7 +30,8 @@ namespace VimeoVHX
                 throw;
             }
 
-            _client.DefaultRequestHeaders.Add("u", token);
+            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(Encoding.ASCII.GetBytes($"{token}:")));
         }
+
     }
 }
