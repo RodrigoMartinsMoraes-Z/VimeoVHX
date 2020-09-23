@@ -9,6 +9,7 @@ namespace VimeoVHX.Costumer
         public string Email { get; set; }
         public string Product { get; set; }
         public Plan Plan { get; set; }
+        public string Plataform { get; set; }
         public int DaysValid { get; set; }
         public bool SendEmail { get; set; }
         public bool IsRental { get; set; }

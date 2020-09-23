@@ -29,8 +29,4 @@ namespace VimeoVHX.Product
         public Link Last { get; set; }
     }
 
-    public class Link
-    {
-        public string Href { get; set; }
-    }
 }
