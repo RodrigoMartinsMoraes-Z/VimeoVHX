@@ -4,7 +4,7 @@ using System.Text;
 
 namespace VimeoVHX.Product
 {
-    class Yearly
+    public class Yearly
     {
         public int Cents { get; set; }
         public string Currency { get; set; }

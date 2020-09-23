@@ -3,7 +3,7 @@ using System;
 
 namespace VimeoVHX.Costumer
 {
-    class ListCostumerParams
+    public class ListCostumerParams
     {
         public string Product { get; set; }
         public string Email { get; set; }
@@ -16,7 +16,7 @@ namespace VimeoVHX.Costumer
         public int PerPage { get; set; }
 
     }
-    enum Sort
+    public enum Sort
     {
         newest,
         oldest,

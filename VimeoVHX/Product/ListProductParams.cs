@@ -5,7 +5,7 @@ using System.Text;
 
 namespace VimeoVHX.Product
 {
-    class ListProductParams
+    public class ListProductParams
     {
         public string Query { get; set; }
         public bool Active { get; set; }
@@ -16,7 +16,7 @@ namespace VimeoVHX.Product
         public int Page { get; set; }
         public int PerPage { get; set; }
     }
-    enum Sort
+    public enum Sort
     {
         Alphabetical,
         Newest,
