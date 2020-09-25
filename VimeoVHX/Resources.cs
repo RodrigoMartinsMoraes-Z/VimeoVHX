@@ -8,68 +8,172 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
-using VimeoVHX.Product;
+using VimeoVHX.Costumers;
+using VimeoVHX.Products;
 
 namespace VimeoVHX
 {
-    class Resources
+    public class Resources
     {
         private readonly HttpClient _client = new HttpClient();
 
-        public Resources()
+        public bool Authentication { get; private set; }
+
+        public void SetAuthentication(string VHXKey)
         {
-            PreencherCabecalho();
+
+            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(Encoding.UTF8.GetBytes($"{VHXKey}:")));
+            Authentication = true;
+
         }
 
-        private void PreencherCabecalho()
+        public async Task<Product> RetrieveAProduct(int id)
         {
-            string token;
+            Authenticated();
 
-            try
-            {
-                token = ConfigurationManager.AppSettings.Get("Token");
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
-
-            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(Encoding.ASCII.GetBytes($"{token}:")));
-        }
-
-        public async Task<Product.Product> RetrieveAProduct(int href)
-        {
-            if (href <= 0)
+            if (id <= 0)
             {
                 throw new Exception("Href can't be null or less than 1");
             }
 
-            HttpResponseMessage response = await _client.GetAsync("https://api.vhx.tv/products/" + href);
+            HttpResponseMessage responseMessage = await _client.GetAsync("https://api.vhx.tv/products/" + id);
 
-            return (Product.Product)await ConvertToObject(response, new Product.Product());
-
-        }
-
-        public async Task<ListOfProducts> ListOfProducts(ListProductParams productParams)
-        {
-
-            string queryString = await GenerateQueryString(productParams);
-
-            HttpResponseMessage response = await _client.GetAsync("https://api.vhx.tv/products/" + queryString);
-
-            return (ListOfProducts)await ConvertToObject(response, new ListOfProducts());
-        }
-
-        private async Task<object> ConvertToObject(HttpResponseMessage responseMessage, object obj)
-        {
             if (responseMessage.IsSuccessStatusCode)
             {
                 string content = await responseMessage.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<object>(content);
+                return JsonConvert.DeserializeObject<Product>(content);
             }
             else
                 throw NotSuccessCode(responseMessage);
+
+        }
+
+        public async Task<ListOfProducts> ListOfProducts(ListProductParams @params)
+        {
+            Authenticated();
+
+            HttpResponseMessage responseMessage;
+
+            if (@params != null)
+            {
+                string queryString = await GenerateQueryString(@params);
+                responseMessage = await _client.GetAsync("https://api.vhx.tv/products/" + queryString);
+            }
+            else
+                responseMessage = await _client.GetAsync("https://api.vhx.tv/products/");
+
+            if (responseMessage.IsSuccessStatusCode)
+            {
+                string content = await responseMessage.Content.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject<ListOfProducts>(content);
+            }
+            else
+                throw NotSuccessCode(responseMessage);
+        }
+
+        public async Task<Customer> CreateCustomer(Customer costumer)
+        {
+            Authenticated();
+
+            if (costumer == null)
+                throw new Exception("Costumer can't be null");
+
+            var json = GenerateJson(costumer);
+
+            HttpResponseMessage responseMessage = await _client.PostAsync("https://api.vhx.tv/customers", json);
+
+            if (responseMessage.IsSuccessStatusCode)
+            {
+                string content = await responseMessage.Content.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject<Customer>(content);
+            }
+            else
+                throw NotSuccessCode(responseMessage);
+
+        }
+
+        public async Task<Customer> RetrieveCustomer(int id)
+        {
+            if (id <= 0)
+            {
+                throw new Exception("Href can't be null or less than 1");
+            }
+            HttpResponseMessage responseMessage = await _client.GetAsync("https://api.vhx.tv/customers/" + id);
+
+            if (responseMessage.IsSuccessStatusCode)
+            {
+                string content = await responseMessage.Content.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject<Customer>(content);
+            }
+            else
+                throw NotSuccessCode(responseMessage);
+
+        }
+
+        public async Task<ListOfCustomers> ListOfCustomers(ListCustomersParams @params)
+        {
+            Authenticated();
+
+            HttpResponseMessage responseMessage;
+            if (@params != null)
+            {
+                string queryString = await GenerateQueryString(@params);
+                responseMessage = await _client.GetAsync("https://api.vhx.tv/customers" + queryString);
+            }
+            else
+                responseMessage = await _client.GetAsync("https://api.vhx.tv/customers");
+
+            if (responseMessage.IsSuccessStatusCode)
+            {
+                string content = await responseMessage.Content.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject<ListOfCustomers>(content);
+            }
+            else
+                throw NotSuccessCode(responseMessage);
+
+        }
+
+        public async Task<string> AddProductToCustomer(Product product, Customer customer, Plan plan, bool isRental)
+        {
+            if (product == null || product.Ref <= 0)
+            {
+                throw new Exception("Product can't be null or Ref is invalid.");
+            }
+
+            if (customer == null || customer.Ref <= 0)
+            {
+                throw new Exception("Customer can't be null or Ref is invalid.");
+            }
+
+            object obj = new
+            {
+                Product = "https://api.vhx.tv/products/" + product.Ref,
+                Plan = Enum.GetName(typeof(Plan), plan),
+                IsRental = isRental
+            };
+            var json = GenerateJson(obj);
+
+            HttpResponseMessage responseMessage = await _client.PutAsync($"https://api.vhx.tv/customers/{customer.Ref}/products", json);
+
+            if (responseMessage.IsSuccessStatusCode)
+            {
+                string content = await responseMessage.Content.ReadAsStringAsync();
+                return content;
+            }
+            else
+                throw NotSuccessCode(responseMessage);
+        }
+
+        internal StringContent GenerateJson(object objeto)
+        {
+            string serializedObject = $"{JsonConvert.SerializeObject(objeto)}";
+            return new StringContent(serializedObject, Encoding.UTF8, "application/json");
+        }
+
+        private void Authenticated()
+        {
+            if (!Authentication)
+                throw new Exception("Please set authetication using the method 'SetAuthentication'.");
         }
 
         private Task<string> GenerateQueryString(object obj)
@@ -83,7 +187,7 @@ namespace VimeoVHX
 
         private Exception NotSuccessCode(HttpResponseMessage response)
         {
-            return new Exception("Error, tried to get a successful status code, but get: " + response.StatusCode.ToString());
+            return new Exception($"Error, tried to get a successful status code, but get: {response.StatusCode}. The server has returned: {response.Content.ReadAsStringAsync()}");
         }
     }
 }
