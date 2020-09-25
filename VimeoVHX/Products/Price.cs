@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace VimeoVHX.Product
+namespace VimeoVHX.Products
 {
     public class Price
     {

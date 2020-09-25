@@ -1,4 +1,4 @@
-﻿namespace VimeoVHX.Costumer
+﻿namespace VimeoVHX.Costumers
 {
     public enum Plan
     {

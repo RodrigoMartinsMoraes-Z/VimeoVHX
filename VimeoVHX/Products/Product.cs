@@ -1,10 +1,12 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 
-namespace VimeoVHX.Product
+namespace VimeoVHX.Products
 {
     public class Product
     {
-        public int Id { get; set; }
+        [JsonProperty("id")]
+        public int Ref { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
         public Price Price { get; set; }

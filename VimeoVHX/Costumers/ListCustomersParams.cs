@@ -1,10 +1,10 @@
 ﻿using Newtonsoft.Json;
 using System;
-using VimeoVHX.Product;
+using VimeoVHX.Products;
 
-namespace VimeoVHX.Costumer
+namespace VimeoVHX.Costumers
 {
-    public class ListCostumerParams
+    public class ListCustomersParams
     {
         public string Product { get; set; }
         public string Email { get; set; }
@@ -16,21 +16,8 @@ namespace VimeoVHX.Costumer
         public int Page { get; set; }
         public int PerPage { get; set; }
         [JsonProperty("_links")]
-        public Links Links{ get; set; }
+        public Links.Links Links{ get; set; }
 
     }
 
-    public class Links
-    {
-        public Link Self { get; set; }
-        public Link Watchlist { get; set; }
-        public Link Watching { get; set; }
-    }
-
-    public enum Sort
-    {
-        newest,
-        oldest,
-        latest
-    }
 }
