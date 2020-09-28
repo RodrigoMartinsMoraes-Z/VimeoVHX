@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Web;
 using VimeoVHX.Costumers;
 using VimeoVHX.Products;
+using VimeoVHX.Video;
 
 namespace VimeoVHX
 {
@@ -133,17 +134,26 @@ namespace VimeoVHX
 
         }
 
+        public async Task<Customer> UpdateCustomer(Customer customer)
+        {
+            customer.Validate();
+
+            HttpResponseMessage responseMessage = await _client.PutAsync($"https://api.vhx.tv/customers/{customer.Ref}", GenerateJson(customer));
+
+            if (responseMessage.IsSuccessStatusCode)
+            {
+                string content = await responseMessage.Content.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject<Customer>(content);
+            }
+            else
+                throw NotSuccessCode(responseMessage);
+        }
+
         public async Task<string> AddProductToCustomer(Product product, Customer customer, Plan plan, bool isRental)
         {
-            if (product == null || product.Ref <= 0)
-            {
-                throw new Exception("Product can't be null or Ref is invalid.");
-            }
+            product.Validate();
 
-            if (customer == null || customer.Ref <= 0)
-            {
-                throw new Exception("Customer can't be null or Ref is invalid.");
-            }
+            customer.Validate();
 
             object obj = new
             {
@@ -159,6 +169,68 @@ namespace VimeoVHX
             {
                 string content = await responseMessage.Content.ReadAsStringAsync();
                 return content;
+            }
+            else
+                throw NotSuccessCode(responseMessage);
+        }
+
+        public async Task<string> RemoveProductFromCustomer(Product product, Customer customer, Plan plan)
+        {
+            if (product == null || product.Ref <= 0)
+            {
+                throw new Exception("Product can't be null or Ref is invalid.");
+            }
+
+            if (customer == null || customer.Ref <= 0)
+            {
+                throw new Exception("Customer can't be null or Ref is invalid.");
+            }
+
+            object obj = new
+            {
+                Product = "https://api.vhx.tv/products/" + product.Ref,
+                Plan = Enum.GetName(typeof(Plan), plan)
+            };
+            var json = GenerateQueryString(GenerateJson(obj));
+
+            HttpResponseMessage responseMessage = await _client.DeleteAsync($"https://api.vhx.tv/customers/{customer.Ref}/products{json}");
+
+            if (responseMessage.IsSuccessStatusCode)
+            {
+                string content = await responseMessage.Content.ReadAsStringAsync();
+                return content;
+            }
+            else
+                throw NotSuccessCode(responseMessage);
+        }
+
+        public async Task<WatchList> WatchingList(Customer customer)
+        {
+            customer.Validate();
+
+            _client.DefaultRequestHeaders.Add("VHX-Customer", "https://api.vhx.tv/customers/" + customer.Ref);
+
+            HttpResponseMessage responseMessage = await _client.GetAsync($"https://api.vhx.tv/customers/{customer.Ref}/watching");
+
+            if (responseMessage.IsSuccessStatusCode)
+            {
+                string content = await responseMessage.Content.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject<WatchList>(content);
+            }
+            else
+                throw NotSuccessCode(responseMessage);
+        } 
+
+        public async Task<WatchList> WatchList(Customer customer)
+        {
+            customer.Validate();
+
+            HttpResponseMessage responseMessage = await _client.GetAsync($"https://api.vhx.tv/customers/{customer.Ref}/watchlist");
+
+            if (responseMessage.IsSuccessStatusCode)
+            {
+                string content = await responseMessage.Content.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject<WatchList>(content);
             }
             else
                 throw NotSuccessCode(responseMessage);
@@ -182,7 +254,7 @@ namespace VimeoVHX
                                              where p.GetValue(obj, null) != null
                                              select p.Name + "=" + HttpUtility.UrlEncode(p.GetValue(obj, null).ToString());
 
-            return Task.FromResult(string.Join("&", properties.ToArray()));
+            return Task.FromResult('?' + string.Join("&", properties.ToArray()));
         }
 
         private Exception NotSuccessCode(HttpResponseMessage response)

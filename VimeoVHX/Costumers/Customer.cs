@@ -23,5 +23,12 @@ namespace VimeoVHX.Costumers
         [JsonProperty("_links")]
         public Links.Links Links { get; set; }
 
+        public void Validate()
+        {
+            if (this == null || Ref <= 0)
+            {
+                throw new Exception("Customer can't be null or Ref is invalid.");
+            }
+        }
     }
 }

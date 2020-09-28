@@ -16,5 +16,13 @@ namespace VimeoVHX.Products
         public int PlaylistsCount { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
+
+        public void Validate()
+        {
+            if (this == null || Ref <= 0)
+            {
+                throw new Exception("Product can't be null or Ref is invalid.");
+            }
+        }
     }
 }

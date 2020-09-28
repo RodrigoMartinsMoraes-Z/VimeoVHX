@@ -14,5 +14,7 @@ namespace VimeoVHX.Links
         public Link Prev { get; set; }
         public Link Next { get; set; }
         public Link Last { get; set; }
+        public Link Files { get; set; }
+        public Link Source { get; set; }
     }
 }
