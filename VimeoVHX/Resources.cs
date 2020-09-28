@@ -1,7 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -219,7 +218,7 @@ namespace VimeoVHX
             }
             else
                 throw NotSuccessCode(responseMessage);
-        } 
+        }
 
         public async Task<WatchList> WatchList(Customer customer)
         {

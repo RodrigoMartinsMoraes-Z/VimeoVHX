@@ -1,6 +1,5 @@
 ﻿using Newtonsoft.Json;
 using System;
-using VimeoVHX.Products;
 
 namespace VimeoVHX.Costumers
 {
@@ -16,7 +15,7 @@ namespace VimeoVHX.Costumers
         public int Page { get; set; }
         public int PerPage { get; set; }
         [JsonProperty("_links")]
-        public Links.Links Links{ get; set; }
+        public Links.Links Links { get; set; }
 
     }
 

@@ -19,7 +19,7 @@ namespace VimeoVHX.Costumers
         public bool SendEmail { get; set; }
         public bool IsRental { get; set; }
         public DateTime CreatedAt { get; }
-        public DateTime UpdatedAt { get;  }
+        public DateTime UpdatedAt { get; }
         [JsonProperty("_links")]
         public Links.Links Links { get; set; }
 

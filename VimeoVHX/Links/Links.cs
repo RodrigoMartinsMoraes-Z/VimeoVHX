@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using VimeoVHX.Products;
-
-namespace VimeoVHX.Links
+﻿namespace VimeoVHX.Links
 {
     public class Links
     {

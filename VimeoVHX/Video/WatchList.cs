@@ -1,8 +1,5 @@
 ﻿using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
-using System.Text;
-using VimeoVHX.Links;
 
 namespace VimeoVHX.Video
 {
@@ -19,6 +16,6 @@ namespace VimeoVHX.Video
     public class Embedded
     {
         [JsonProperty("items")]
-        public  List<Video> Videos{ get; set; }
+        public List<Video> Videos { get; set; }
     }
 }

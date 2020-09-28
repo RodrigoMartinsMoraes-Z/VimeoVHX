@@ -1,14 +1,11 @@
 ﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace VimeoVHX.Products
 {
     public class ListOfProducts
     {
         [JsonProperty("_links")]
-        public Links.Links Links{ get; set; }
+        public Links.Links Links { get; set; }
         public int Count { get; set; }
         public int Total { get; set; }
         [JsonProperty("_embedded")]
