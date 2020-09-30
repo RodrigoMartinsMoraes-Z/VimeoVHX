@@ -13,24 +13,7 @@ using VimeoVHX.Video;
 
 namespace VimeoVHX
 {
-    public interface IResources
-    {
-        bool Authentication { get; }
-
-        Task<string> AddProductToCustomer(Product product, Customer customer, Plan plan, bool isRental);
-        Task<Customer> CreateCustomer(Customer costumer);
-        Task<ListOfCustomers> ListOfCustomers(ListCustomersParams @params);
-        Task<ListOfProducts> ListOfProducts(ListProductParams @params);
-        Task<string> RemoveProductFromCustomer(Product product, Customer customer, Plan plan);
-        Task<Product> RetrieveAProduct(int id);
-        Task<Customer> RetrieveCustomer(int id);
-        void SetAuthentication(string VHXKey);
-        Task<Customer> UpdateCustomer(Customer customer);
-        Task<WatchList> WatchingList(Customer customer);
-        Task<WatchList> WatchList(Customer customer);
-    }
-
-    internal class Resources : IResources
+    internal class Resources
     {
         private readonly HttpClient _client = new HttpClient();
 
