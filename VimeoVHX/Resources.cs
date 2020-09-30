@@ -13,7 +13,24 @@ using VimeoVHX.Video;
 
 namespace VimeoVHX
 {
-    public class Resources
+    public interface IResources
+    {
+        bool Authentication { get; }
+
+        Task<string> AddProductToCustomer(Product product, Customer customer, Plan plan, bool isRental);
+        Task<Customer> CreateCustomer(Customer costumer);
+        Task<ListOfCustomers> ListOfCustomers(ListCustomersParams @params);
+        Task<ListOfProducts> ListOfProducts(ListProductParams @params);
+        Task<string> RemoveProductFromCustomer(Product product, Customer customer, Plan plan);
+        Task<Product> RetrieveAProduct(int id);
+        Task<Customer> RetrieveCustomer(int id);
+        void SetAuthentication(string VHXKey);
+        Task<Customer> UpdateCustomer(Customer customer);
+        Task<WatchList> WatchingList(Customer customer);
+        Task<WatchList> WatchList(Customer customer);
+    }
+
+    internal class Resources : IResources
     {
         private readonly HttpClient _client = new HttpClient();
 
@@ -94,6 +111,8 @@ namespace VimeoVHX
 
         public async Task<Customer> RetrieveCustomer(int id)
         {
+            Authenticated();
+
             if (id <= 0)
             {
                 throw new Exception("Href can't be null or less than 1");
@@ -135,6 +154,8 @@ namespace VimeoVHX
 
         public async Task<Customer> UpdateCustomer(Customer customer)
         {
+            Authenticated();
+
             customer.Validate();
 
             HttpResponseMessage responseMessage = await _client.PutAsync($"https://api.vhx.tv/customers/{customer.Ref}", GenerateJson(customer));
@@ -150,6 +171,8 @@ namespace VimeoVHX
 
         public async Task<string> AddProductToCustomer(Product product, Customer customer, Plan plan, bool isRental)
         {
+            Authenticated();
+
             product.Validate();
 
             customer.Validate();
@@ -175,6 +198,8 @@ namespace VimeoVHX
 
         public async Task<string> RemoveProductFromCustomer(Product product, Customer customer, Plan plan)
         {
+            Authenticated();
+
             if (product == null || product.Ref <= 0)
             {
                 throw new Exception("Product can't be null or Ref is invalid.");
@@ -205,6 +230,8 @@ namespace VimeoVHX
 
         public async Task<WatchList> WatchingList(Customer customer)
         {
+            Authenticated();
+
             customer.Validate();
 
             _client.DefaultRequestHeaders.Add("VHX-Customer", "https://api.vhx.tv/customers/" + customer.Ref);
@@ -222,6 +249,8 @@ namespace VimeoVHX
 
         public async Task<WatchList> WatchList(Customer customer)
         {
+            Authenticated();
+
             customer.Validate();
 
             HttpResponseMessage responseMessage = await _client.GetAsync($"https://api.vhx.tv/customers/{customer.Ref}/watchlist");
