@@ -13,7 +13,7 @@ using VimeoVHX.Video;
 
 namespace VimeoVHX
 {
-    internal class Resources
+    public class Resources
     {
         private readonly HttpClient _client = new HttpClient();
 
@@ -48,7 +48,7 @@ namespace VimeoVHX
 
         }
 
-        public async Task<ListOfProducts> ListOfProducts(ListProductParams @params)
+        public async Task<ListOfProducts> ListOfProducts(ListProductParams @params = null)
         {
             Authenticated();
 

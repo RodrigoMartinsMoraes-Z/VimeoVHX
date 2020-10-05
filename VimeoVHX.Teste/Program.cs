@@ -7,15 +7,15 @@ namespace VimeoVHX.Teste
     {
         static void Main(string[] args)
         {
-            IVHXService service;
+            Resources resources = new Resources();
 
             var key = ConfigurationManager.AppSettings.Get("VHXKey");
 
-            service.SetAuthentication(key);
+            resources.SetAuthentication(key);
 
             Console.WriteLine("iniciando teste");
 
-            var r = service.ListOfProducts(null).Result;
+            var r = resources.ListOfProducts().Result;
 
             Console.WriteLine("fim do teste");
         }

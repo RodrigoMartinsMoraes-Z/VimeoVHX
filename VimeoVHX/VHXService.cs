@@ -7,6 +7,7 @@ namespace VimeoVHX
 {
     public interface IVHXService
     {
+        void SetAuthentication(string key);
         Task<string> AddProductToCustomer(Product product, Customer customer, Plan plan, bool isRental);
         Task<Customer> CreateCustomer(Customer customer);
         Task<ListOfCustomers> ListOfCustomers(ListCustomersParams @params);
@@ -23,7 +24,7 @@ namespace VimeoVHX
     {
         private readonly Resources _resources = new Resources();
 
-        public void SetAuthentication (string key)
+        public void SetAuthentication(string key)
         {
             _resources.SetAuthentication(key);
         }
