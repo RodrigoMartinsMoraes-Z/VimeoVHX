@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System;
+using System.Text.RegularExpressions;
 
 namespace VimeoVHX.Costumers
 {
@@ -17,7 +18,7 @@ namespace VimeoVHX.Costumers
         public string Plataform { get; set; }
         [JsonIgnore]
         public int DaysValid { get; set; }
-        public string ExpiresIn { get => DaysValid + "-days"; }
+        public string ExpiresIn { get => DaysValid + "-days"; set => DaysValid = Int32.Parse(Regex.Match(value, @"\d+").Value); }
         public bool SendEmail { get; set; }
         public bool IsRental { get; set; }
         public DateTime CreatedAt { get; }
