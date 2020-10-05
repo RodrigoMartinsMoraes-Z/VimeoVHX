@@ -15,7 +15,9 @@ namespace VimeoVHX.Costumers
         [JsonProperty("plan")]
         public string Subscription { get => Enum.GetName(typeof(Plan), Plan); }
         public string Plataform { get; set; }
+        [JsonIgnore]
         public int DaysValid { get; set; }
+        public string ExpiresIn { get => DaysValid + "-days"; }
         public bool SendEmail { get; set; }
         public bool IsRental { get; set; }
         public DateTime CreatedAt { get; }
@@ -25,9 +27,9 @@ namespace VimeoVHX.Costumers
 
         public void Validate()
         {
-            if (this == null || Ref <= 0)
+            if (this == null)
             {
-                throw new Exception("Customer can't be null or Ref is invalid.");
+                throw new Exception("Customer can't be null.");
             }
         }
     }
