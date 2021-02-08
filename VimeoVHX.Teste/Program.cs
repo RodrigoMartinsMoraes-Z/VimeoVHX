@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Configuration;
 
+using VimeoVHX.Costumers;
+
 namespace VimeoVHX.Teste
 {
     class Program
@@ -15,7 +17,16 @@ namespace VimeoVHX.Teste
 
             Console.WriteLine("iniciando teste");
 
-            var r = resources.ListOfProducts().Result;
+            Customer customer = new Customer
+            {
+                DaysValid = 180,
+                Email = "rodrigo_moraes@hotmail.com.br",
+                Name = "Rodrigo Martins Moraes",
+                Plan = Plan.Standard,
+
+            };
+
+            var r = resources.CreateCustomer(customer).Result;
 
             Console.WriteLine("fim do teste");
         }

@@ -1,6 +1,8 @@
 ﻿using Newtonsoft.Json;
+
 using System;
 using System.Collections.Generic;
+
 using VimeoVHX.Costumers;
 
 namespace VimeoVHX.Video

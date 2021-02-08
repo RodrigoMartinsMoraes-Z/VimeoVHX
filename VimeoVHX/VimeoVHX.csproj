@@ -5,7 +5,8 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>RodrigoMMoraes</Authors>
     <Company>Stralighttecnologia</Company>
-    <Version>1.1.0</Version>
+    <Version>1.2.0</Version>
+    <Description>Library for use with vimeo vhx</Description>
   </PropertyGroup>
 
   <ItemGroup>

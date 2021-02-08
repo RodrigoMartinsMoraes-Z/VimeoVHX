@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,6 +8,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
+
 using VimeoVHX.Costumers;
 using VimeoVHX.Products;
 using VimeoVHX.Video;
@@ -44,7 +46,7 @@ namespace VimeoVHX
                 return JsonConvert.DeserializeObject<Product>(content);
             }
             else
-                throw NotSuccessCode(responseMessage);
+                throw NotSuccessCode(responseMessage).Result;
 
         }
 
@@ -68,7 +70,7 @@ namespace VimeoVHX
                 return JsonConvert.DeserializeObject<ListOfProducts>(content);
             }
             else
-                throw NotSuccessCode(responseMessage);
+                throw NotSuccessCode(responseMessage).Result;
         }
 
         public async Task<Customer> CreateCustomer(Customer costumer)
@@ -88,7 +90,7 @@ namespace VimeoVHX
                 return JsonConvert.DeserializeObject<Customer>(content);
             }
             else
-                throw NotSuccessCode(responseMessage);
+                throw NotSuccessCode(responseMessage).Result;
 
         }
 
@@ -108,7 +110,7 @@ namespace VimeoVHX
                 return JsonConvert.DeserializeObject<Customer>(content);
             }
             else
-                throw NotSuccessCode(responseMessage);
+                throw NotSuccessCode(responseMessage).Result;
 
         }
 
@@ -131,7 +133,7 @@ namespace VimeoVHX
                 return JsonConvert.DeserializeObject<ListOfCustomers>(content);
             }
             else
-                throw NotSuccessCode(responseMessage);
+                throw NotSuccessCode(responseMessage).Result;
 
         }
 
@@ -149,7 +151,7 @@ namespace VimeoVHX
                 return JsonConvert.DeserializeObject<Customer>(content);
             }
             else
-                throw NotSuccessCode(responseMessage);
+                throw NotSuccessCode(responseMessage).Result;
         }
 
         public async Task<string> AddProductToCustomer(Product product, Customer customer, Plan plan, bool isRental)
@@ -176,7 +178,7 @@ namespace VimeoVHX
                 return content;
             }
             else
-                throw NotSuccessCode(responseMessage);
+                throw NotSuccessCode(responseMessage).Result;
         }
 
         public async Task<string> RemoveProductFromCustomer(Product product, Customer customer, Plan plan)
@@ -208,7 +210,7 @@ namespace VimeoVHX
                 return content;
             }
             else
-                throw NotSuccessCode(responseMessage);
+                throw NotSuccessCode(responseMessage).Result;
         }
 
         public async Task<WatchList> WatchingList(Customer customer)
@@ -227,7 +229,7 @@ namespace VimeoVHX
                 return JsonConvert.DeserializeObject<WatchList>(content);
             }
             else
-                throw NotSuccessCode(responseMessage);
+                throw NotSuccessCode(responseMessage).Result;
         }
 
         public async Task<WatchList> WatchList(Customer customer)
@@ -244,7 +246,7 @@ namespace VimeoVHX
                 return JsonConvert.DeserializeObject<WatchList>(content);
             }
             else
-                throw NotSuccessCode(responseMessage);
+                throw NotSuccessCode(responseMessage).Result;
         }
 
         internal StringContent GenerateJson(object objeto)
@@ -268,9 +270,9 @@ namespace VimeoVHX
             return Task.FromResult('?' + string.Join("&", properties.ToArray()));
         }
 
-        private Exception NotSuccessCode(HttpResponseMessage response)
+        private async Task<Exception> NotSuccessCode(HttpResponseMessage response)
         {
-            return new Exception($"Error, tried to get a successful status code, but get: {response.StatusCode}. The server has returned: {response.Content.ReadAsStringAsync()}");
+            return new Exception($"Error, tried to get a successful status code, but get: {response.StatusCode}. The server has returned: {await response.Content.ReadAsStringAsync()}");
         }
     }
 }
